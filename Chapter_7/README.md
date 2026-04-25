@@ -1,27 +1,88 @@
 Sweetness Prediction from SMILES: Bi-LSTM vs Transformer 🧪💊
-PythonDeep LearningCheminformaticsSMILES Regression
-📖 OverviewThis repository provides a comprehensive pipeline for molecular sweetness prediction based on SMILES string sequence modeling. It integrates custom SMILES tokenization, dataset processing, Bi-LSTM and Transformer deep learning architectures, end-to-end training, quantitative evaluation and visual analysis. This work realizes molecular structure-driven logSw regression, comparing sequential feature extraction capabilities between recurrent neural networks and attention-based models.
-✨ Key FeaturesCustom SMILES Tokenizer:
-Regular expression-based molecular tokenization for atoms, bonds, brackets and special chemical symbols.Auto-build vocabulary, support <pad>, <unk>, <sos>, <eos> special tokens.Vocabulary serialization and reversible encode/decode function.
-Standard Dataset Pipeline:
-Automatic CSV data cleaning, missing value filtering and column normalization.80%/10%/10% train/val/test random split with fixed random seed.PyTorch Dataset & DataLoader encapsulation for batch training.
-Bi-LSTM Regression Model:
-Bidirectional LSTM structure for local sequence feature capture of molecules.Embedding layer, bidirectional recurrent module and dropout regularization.Global mean pooling + MLP regression head for continuous logSw prediction.
-Transformer Regression Model 🆕:
-Sinusoidal positional encoding to inject sequence position information.Multi-head self-attention encoder to capture long-range chemical dependencies.Padding mask mechanism and masked mean pooling for variable-length SMILES.
-Visualization & Quantitative Evaluation:
-Dataset distribution analysis: sequence length, token frequency and label distribution.Learning curve monitoring for training and validation loss.True-predicted scatter plot and R² metric calculation.Dual-model horizontal comparison of validation loss and R² performance.
-🛠️ RequirementsInstall the necessary dependencies. (Note: GPU is recommended for faster Transformer and LSTM training).
+
+
+
+
+
+
+
+
+📖 Overview
+This repository provides a complete, reproducible deep learning pipeline for predicting molecular sweetness (logSw) directly from SMILES strings. We implement and compare two state-of-the-art sequence models—Bi-LSTM and Transformer—to learn chemical structural patterns and perform regression tasks. The project includes full data preprocessing, custom SMILES tokenization, model training/evaluation, and rich visualization for performance analysis.
+✨ Key Features
+1. Custom SMILES Tokenization
+Regex-based tokenizer tailored for molecular SMILES grammar (supports atoms, bonds, cycles, and special symbols)
+Auto vocabulary construction with special tokens (<pad>, <unk>, <sos>, <eos>)
+Vocabulary persistence (save/load via JSON)
+Fixed-length sequence padding and encoding/decoding
+2. Standard Dataset Pipeline
+Automated CSV data cleaning (missing value removal, column normalization)
+80%/10%/10% train/validation/test random split
+Encapsulated PyTorch Dataset and DataLoader for batch processing
+3. Dual Model Architectures
+表格
+Model	Description
+Bi-LSTM	Bidirectional LSTM with embedding layer, dropout, and MLP regression head
+Transformer	Transformer encoder with sinusoidal positional encoding, multi-head self-attention, and masked mean pooling
+4. Training & Evaluation
+Unified training loop for both models
+MSE loss + Adam optimizer + gradient clipping
+Regression metrics: MSE and 
+R 
+2
+ 
+ score
+One-click model weight saving
+5. Rich Visualization
+Dataset dashboard (sequence length, token frequency, label distribution)
+Learning curves (train/val loss)
+True vs. predicted scatter plots
+Head-to-head model comparison (val loss & 
+R 
+2
+ 
+)
+🛠️ Requirements
+Install dependencies via pip:
 bash
 运行
 pip install numpy pandas torch matplotlib seaborn scikit-learn
-🚧 Project Status / Future Updates
- Complete SMILES tokenization and vocabulary construction
- Bi-LSTM and Transformer dual model regression framework
- Unified training loop, evaluation metrics and model saving
- Multi-dimensional data visualization and model comparison
- Add Transformer attention weight visualization
- Introduce molecular fingerprint hybrid feature fusion
- Support cross-validation and hyperparameter search
- Add single SMILES online inference function
- Optimize model structure and regularization strategy
+Note: GPU is recommended for faster model training.
+📁 Project Structure
+plaintext
+sweetness-prediction/
+├── sweetness_prediction.py  # Main pipeline script
+├── SweetpredDB.csv          # Your dataset (place here)
+├── vocab.json               # Auto-generated SMILES vocabulary
+├── bilstm.pt                # Trained Bi-LSTM weights
+├── transformer.pt           # Trained Transformer weights
+└── README.md                # This file
+🚀 Quick Start
+1. Prepare Data
+Place your dataset (named SweetpredDB.csv) in the project root. The CSV must contain two columns:
+Smiles: Molecular SMILES strings
+logSw: Sweetness target value (logarithm scale)
+2. Run the Pipeline
+Execute the main script to start training and evaluation:
+bash
+运行
+python sweetness_prediction.py
+3. Check Outputs
+Trained model weights: bilstm.pt, transformer.pt
+Vocabulary file: vocab.json
+Interactive plots (dataset stats, learning curves, model comparison)
+📊 Expected Results
+表格
+Model	Best Val 
+R 
+2
+ 
+Test MSE
+Bi-LSTM	~0.75 (example)	~0.45 (example)
+Transformer	~0.78 (example)	~0.40 (example)
+Note: Actual results depend on your dataset size and quality.
+📜 License
+This project is licensed under the MIT License. Feel free to use it for research or commercial purposes.
+🙏 Acknowledgments
+Inspired by cheminformatics and molecular property prediction research
+Built with PyTorch, pandas, and scikit-learn
