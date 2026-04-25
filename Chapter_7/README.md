@@ -1,37 +1,72 @@
-1. 项目简介
-本实验通过计算机辅助方法，对分子的甜度指标（logSw）进行定量结构-活性关系（QSAR）建模。相比于上一节的深度学习方法，本节侧重于可解释性机器学习，通过经典物理化学描述符来理解影响分子甜度的关键因素。
+SMILES Sweetness Prediction: Bi-LSTM vs. Transformer 🍭🧪🤖
+PythonLicenseChemoinformaticsPyTorch
 
-2. 核心技术栈
-化学信息学: RDKit (用于计算分子描述符及 Morgan 指纹)
-特征降维: t-SNE (化学空间可视化)
-机器学习算法: LightGBM (梯度提升决策树回归)
-模型解释: SHAP (基于博弈论的特征贡献度分析)
-自动建模辅助: LazyPredict (快速筛选基准模型)
-3. 工作流程 (Workflow)
-特征提取 (Featurization):
-计算 9 类核心物理化学描述符（分子量 MW、脂水分配系数 logP、极性表面积 TPSA 等）。
-生成 2048 位的 Morgan 指纹 (Radius=2) 以捕捉局部结构信息。
-探索性数据分析 (EDA):
-t-SNE 可视化: 将高维描述符空间映射到 2D 平面，观察高甜度与低甜度分子的分布差异。
-统计分析: 通过小提琴图对比不同类别间核心描述符的分布。
-模型训练:
-使用 LightGBM 进行回归预测。
-引入早停机制（Early Stopping）防止过拟合。
-可解释性分析 (Explainable AI):
-使用 SHAP Summary Plot 评估全局特征重要性。
-使用 SHAP Waterfall Plot 对特定高活性分子进行个体贡献度拆解。
-4. 关键发现与可视化说明
-Chemical Space: 观察 t-SNE 图可以判断甜度分子在化学空间上是否存在聚集效应。
-SHAP 分析:
-全局视角: 哪些因素（如 logP 或氢键供体）对甜度影响最大？
-局部视角: 针对具体某个甜度极高的分子，是什么结构特征导致了预测值的升高？
-5. 环境准备
+📖 Overview
+This repository contains a deep learning pipeline for predicting the sweetness intensity of molecules (logSw) directly from their SMILES (Simplified Molecular Input Line Entry System) strings. The project compares two powerful architectures—Bidirectional LSTM (RNN) and Transformer (Attention)—to determine which is more effective at capturing the structural dependencies of sweet-tasting compounds.
+
+✨ Key Features
+Custom SMILES Tokenizer:
+
+Uses a specialized regex-based tokenizer to correctly identify atoms (e.g., Br, Cl), rings, and bonds.
+Includes special tokens (<sos>, <eos>, <pad>) for sequence processing.
+Exploratory Data Analysis (EDA) Dashboard:
+
+Visualizes sequence length distributions.
+Analyzes top-10 most frequent chemical tokens.
+Plots the statistical distribution of the logSw target variable.
+Dual Model Architecture Comparison:
+
+Bi-LSTM Regressor: A sequence-based model using bidirectional Long Short-Term Memory units to capture local structural context.
+Transformer Regressor: A state-of-the-art model using Multi-Head Self-Attention and Positional Encoding to capture global molecular dependencies.
+Advanced Evaluation:
+
+Real-time training/validation loss tracking.
+Performance metrics using 
+R
+2
+R 
+2
+  Score and MSE.
+Direct model "Showdown" visualizations comparing learning curves and prediction accuracy.
+🏗️ Model Architectures
+1. Bi-LSTM Regressor
+Embedding Layer: Maps tokens to a 128-dimensional space.
+LSTM: 2-layer bidirectional processing with Dropout.
+Pooling: Mean pooling across the sequence dimension for a fixed-size molecular representation.
+2. Transformer Regressor
+Positional Encoding: Injects sequence order information into the embeddings.
+Encoder: 3-layer Transformer Encoder with 4 attention heads.
+Masked Mean Pooling: Aggregates features while ignoring padding tokens for cleaner signal propagation.
+🛠️ Requirements
+Ensure you have a GPU-enabled environment (like Google Colab) for faster training.
+
 Bash
 
-pip install rdkit-pypi seaborn sklearn lightgbm shap joblib
-6. 文件结构与产出
-analysis_script.py: 核心 Python 代码。
-lgbm_model.pkl: 训练好的 LightGBM 模型。
-preprocessing_info.pkl: 包含特征选择和均值填充等预处理元数据。
-可视化结果: 包含 logSw 分布图、t-SNE 散点图、回归拟合图及 SHAP 解释图。
+pip install pandas numpy torch matplotlib seaborn scikit-learn
+🚀 Getting Started
+Prepare Data: Ensure your dataset is in CSV format with columns Smiles and logSw.
+Run Pipeline:
+Python
 
+# The script automatically handles:
+# 1. Tokenization and Vocab building
+# 2. Data splitting (Train/Val/Test)
+# 3. Model training for both architectures
+# 4. Result plotting and model saving (.pt files)
+python sweetness_prediction.py
+📊 Results & Visualization
+The pipeline generates several plots:
+
+Dataset Dashboard: Understanding the chemical composition of your data.
+Learning Curves: Monitoring for overfitting or convergence issues.
+Regression Plots: Predicted vs. Actual values to visualize 
+R
+2
+R 
+2
+  performance.
+Model Showdown: A direct overlay comparison of which model minimizes MSE more effectively.
+🚧 Project Status / Future Updates
+ Integration of Pre-trained ChemBERTa embeddings.
+ Addition of Attention Map visualizations to see which atoms contribute most to "sweetness".
+ Support for Data Augmentation (SMILES randomization).
