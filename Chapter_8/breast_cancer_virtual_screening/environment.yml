@@ -1,0 +1,23 @@
+name: bcvs
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.12
+  - rdkit
+  - pytorch
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - matplotlib
+  - requests
+  - pyyaml
+  - typer
+  - rich
+  - tqdm
+  - joblib
+  - pytest
+  - pip
+  - pip:
+      - admet-ai

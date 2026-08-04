@@ -1,0 +1,146 @@
+project:
+  name: breast_cancer_virtual_screening
+  root: ./runs/bcvs_demo
+  seed: 2026
+
+# Gene symbols are resolved dynamically against ChEMBL. For publication work,
+# pin target_chembl_id after reviewing data/targets_resolved.csv.
+targets:
+  - symbol: ESR1
+    name: Estrogen receptor alpha
+    weight: 1.00
+    target_chembl_id: null
+  - symbol: ERBB2
+    name: HER2 receptor tyrosine kinase
+    weight: 1.00
+    target_chembl_id: null
+  - symbol: PIK3CA
+    name: PI3K catalytic subunit alpha
+    weight: 0.90
+    target_chembl_id: null
+  - symbol: AKT1
+    name: AKT serine/threonine kinase 1
+    weight: 0.80
+    target_chembl_id: null
+  - symbol: CDK4
+    name: Cyclin-dependent kinase 4
+    weight: 0.80
+    target_chembl_id: null
+  - symbol: CDK6
+    name: Cyclin-dependent kinase 6
+    weight: 0.80
+    target_chembl_id: null
+  - symbol: PARP1
+    name: Poly(ADP-ribose) polymerase 1
+    weight: 0.75
+    target_chembl_id: null
+
+chembl:
+  base_url: https://www.ebi.ac.uk/chembl/api/data
+  activity_type: IC50
+  organism: Homo sapiens
+  target_type: SINGLE PROTEIN
+  page_size: 1000
+  timeout_seconds: 60
+  max_retries: 6
+  only_exact_relation: true
+  require_standard_flag: true
+  remove_potential_duplicates: true
+  accepted_assay_types: [B, F]
+  min_target_samples: 80
+  aggregate: median
+  max_replicate_pic50_sd: 1.5
+
+pubchem:
+  base_url: https://pubchem.ncbi.nlm.nih.gov/rest/pug
+  requests_per_second: 4.5
+  batch_size: 100
+  timeout_seconds: 60
+  max_retries: 6
+
+standardization:
+  cleanup: true
+  largest_fragment: true
+  uncharge: true
+  canonical_tautomer: false
+  isomeric_smiles: true
+  allowed_elements: [H, B, C, N, O, F, Si, P, S, Cl, Se, Br, I]
+
+training:
+  seeds: [13, 37, 73]
+  split: scaffold
+  train_fraction: 0.80
+  validation_fraction: 0.10
+  test_fraction: 0.10
+  batch_size: 64
+  epochs: 250
+  patience: 30
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  hidden_dim: 192
+  num_layers: 4
+  dropout: 0.15
+  minimum_delta: 0.0005
+  device: auto
+  target_normalization: true
+
+screening:
+  chunk_size: 5000
+  activity_threshold_pic50: 6.0
+  maximum_uncertainty: 1.0
+  applicability_domain_min_tanimoto: 0.20
+  applicability_reference_limit: 2500
+  top_n: 500
+  target_aggregation: weighted_max
+  diversity_tanimoto_cutoff: 0.65
+  diversity_pool_multiplier: 5
+  final_weights:
+    activity: 0.45
+    admet: 0.25
+    druglikeness: 0.15
+    applicability: 0.10
+    novelty: 0.05
+
+physchem:
+  molecular_weight: [150, 650]
+  logp: [-1.5, 6.0]
+  tpsa: [15, 160]
+  hbd_max: 6
+  hba_max: 12
+  rotatable_bonds_max: 15
+  formal_charge_abs_max: 2
+  lipinski_violations_max: 1
+  synthetic_accessibility_max: 6.5
+
+structural_alerts:
+  pains_hard_filter: true
+  brenk_hard_filter: false
+  nih_hard_filter: false
+
+admet:
+  enabled: true
+  batch_size: 512
+  # The endpoint names are matched only when present in the installed ADMET-AI version.
+  rules:
+    Ames: {operator: "<=", threshold: 0.50, hard: true}
+    hERG: {operator: "<=", threshold: 0.50, hard: true}
+    DILI: {operator: "<=", threshold: 0.50, hard: true}
+    HIA_Hou: {operator: ">=", threshold: 0.50, hard: false}
+    Bioavailability_Ma: {operator: ">=", threshold: 0.50, hard: false}
+  missing_endpoint_policy: warn
+
+bbb:
+  enabled: true
+  endpoint_candidates: [BBB_Martins, BBB]
+  threshold: 0.50
+  # BBB is disease-context dependent. Set hard_filter=true for CNS/brain-metastasis projects.
+  hard_filter: false
+  desired: permeable
+
+plots:
+  format: [png, pdf, svg]
+  dpi: 600
+  font_family: Times New Roman
+  base_font_size: 8
+  figure_width_in: 3.54
+  wide_figure_width_in: 7.20

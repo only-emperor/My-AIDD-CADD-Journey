@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bcvs"
+version = "0.1.0"
+description = "Auditable breast-cancer target virtual screening pipeline with ChEMBL, PubChem, ZINC, DrugBank import, GNN ensembles, ADMET, BBB and PAINS filtering."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Research Pipeline Template"}]
+dependencies = [
+  "numpy>=2.0",
+  "pandas>=2.2",
+  "requests>=2.32",
+  "PyYAML>=6.0",
+  "typer>=0.16",
+  "rich>=13.9",
+  "tqdm>=4.67",
+  "rdkit>=2024.9",
+  "torch>=2.4",
+  "scikit-learn>=1.5",
+  "scipy>=1.14",
+  "matplotlib>=3.9",
+  "joblib>=1.4"
+]
+
+[project.optional-dependencies]
+admet = ["admet-ai>=2.0"]
+parquet = ["pyarrow>=18"]
+dev = ["pytest>=8.3", "ruff>=0.9"]
+
+[project.scripts]
+bcvs = "bcvs.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

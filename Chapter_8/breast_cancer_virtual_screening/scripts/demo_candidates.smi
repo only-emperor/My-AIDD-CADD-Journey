@@ -1,0 +1,7 @@
+CCOc1ccc2nc(S(N)(=O)=O)sc2c1 demo_sulfonamide
+COc1ccc2[nH]c(C(=O)N3CCN(C)CC3)cc2c1 demo_indole
+CN1CCN(CC1)C2=NC3=C(C=NN3C4=CC=CC=C4)C=N2 demo_heterocycle
+CC(C)(C)c1ccc(cc1)C(O)CCCN(C)C demo_tertiary_amine
+O=C(O)c1ccccc1O aspirin
+CC(=O)Oc1ccccc1C(=O)O aspirin_duplicate
+CN(C)C1=NC(=NC2=C1N=CN2C)N caffeine_like

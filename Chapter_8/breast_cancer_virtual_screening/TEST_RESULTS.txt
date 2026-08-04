@@ -1,0 +1,6 @@
+$ python -m compileall -q src tests
+PASS: compileall
+
+$ pytest -q
+............                                                             [100%]
+NOTE: ruff executable not installed in assembly environment.
